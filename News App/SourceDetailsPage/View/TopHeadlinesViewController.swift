@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class TopHeadlinesViewController: UIViewController {
     
@@ -22,18 +23,19 @@ class TopHeadlinesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //MARK: Page Controller Settings
+        //TODO: Make Carousel View Auto Slide
         self.pageController.hidesForSinglePage = true
         self.pageController.currentPage = 0
-        self.pageController.numberOfPages = 10
+        self.pageController.numberOfPages = 3
         
         //MARK: - Auto Resizing for cells
-        self.topTableView.estimatedRowHeight = 250
+        self.topTableView.estimatedRowHeight = 275
         self.topTableView.rowHeight = UITableView.automaticDimension
         
         //MARK: - NavigationBar Settings
         self.navigationItem.title = self.name
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(reloadData))
-
+        
         loadData()
     }
     
@@ -74,11 +76,24 @@ extension TopHeadlinesViewController: UITableViewDelegate, UITableViewDataSource
         cell.loadWith(data: viewModel.topSources[indexPath.row])
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let url = URL(string: viewModel.topSources[indexPath.row].url ?? "")
+        let config = SFSafariViewController.Configuration()
+                config.entersReaderIfAvailable = true
+        let vc = SFSafariViewController(url: url!, configuration: config)
+               present(vc, animated: true)
+        
+    }
 }
 
 //MARK: - CollectionView Delegate and Data Source
 
-extension TopHeadlinesViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension TopHeadlinesViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return collectionView.bounds.size
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.topSources.count
@@ -91,10 +106,18 @@ extension TopHeadlinesViewController: UICollectionViewDelegate, UICollectionView
         return cell
         
     }
-
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        self.pageController.currentPage = indexPath.row
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let url = URL(string: viewModel.topSources[indexPath.row].url ?? "")
+        let config = SFSafariViewController.Configuration()
+                config.entersReaderIfAvailable = true
+        let vc = SFSafariViewController(url: url!, configuration: config)
+               present(vc, animated: true)
     }
     
-    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let pageIndex = round(scrollView.contentOffset.x/collectionView.bounds.width)
+        pageController.currentPage = Int(pageIndex)
+    }
 }
+

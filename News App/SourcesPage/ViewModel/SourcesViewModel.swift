@@ -12,7 +12,7 @@ class SourcesViewModel {
     var onSuccessResponse: (()->())?
     var onErrorResponse: ((String)->())?
     
-    private var key = "d2d3e93d90684032b8e29030546658a7"
+    private var key = "00fcefaa26164dd0a0d4421698fc4982"
     private var language = "en"
     private var components = URLComponents(string: "https://newsapi.org/v2/sources")
     

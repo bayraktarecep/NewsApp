@@ -18,7 +18,7 @@ class TopHeadlinesCollectionViewCell: UICollectionViewCell {
         titleLabel.text = data.title
         
         newsImage.kf.indicatorType = .activity
-        let imageUrl = URL(string: data.urlToImage)
+        let imageUrl = URL(string: data.urlToImage ?? "")
         newsImage.kf.setImage(with: imageUrl)
         
     }

@@ -13,6 +13,8 @@ class TopHeadlinesTableViewCell: UITableViewCell {
     @IBOutlet weak var newsImage: UIImageView!
     @IBOutlet weak var newsTitle: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
+    //TODO: Make button available
+    @IBOutlet weak var readingListButton: UIButton!
     
     
     override func awakeFromNib() {
@@ -42,7 +44,7 @@ class TopHeadlinesTableViewCell: UITableViewCell {
         }
         
         newsImage.kf.indicatorType = .activity
-        let imageUrl = URL(string: data.urlToImage)
+        let imageUrl = URL(string: data.urlToImage ?? "")
         newsImage.kf.setImage(with: imageUrl)
     }
     

@@ -13,13 +13,17 @@ protocol CategoryFilterDelegate {
 }
 
 class SourcesViewController: UIViewController, CategoryFilterDelegate {
-
+    
     //MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
     var viewModel = SourcesViewModel()
+    let activityView = UIActivityIndicatorView(style: .large)
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.activityView.center = self.view.center
+        self.view.addSubview(self.activityView)
         
         self.tableView.estimatedRowHeight = 140
         self.tableView.rowHeight = UITableView.automaticDimension
@@ -39,8 +43,14 @@ class SourcesViewController: UIViewController, CategoryFilterDelegate {
         
     }
     @IBAction func reloadData(_ sender: Any) {
+        self.activityView.startAnimating()
         self.tableView.reloadData()
+        UserDefaults.setFilter(selectedFilter: .none)
+        viewModel.fetchData()
+        self.activityView.stopAnimating()
     }
+    
+    
     
     @IBAction func filterCategories(_ sender: Any) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "filters") as? FilterCategoryTableViewController
@@ -58,9 +68,11 @@ class SourcesViewController: UIViewController, CategoryFilterDelegate {
         }
     }
     func clearFilter() {
+        self.activityView.startAnimating()
         self.navigationController?.popToRootViewController(animated: true)
         self.tableView.reloadData()
         self.loadData()
+        self.activityView.stopAnimating()
     }
     
     
